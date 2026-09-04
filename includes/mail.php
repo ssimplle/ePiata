@@ -55,31 +55,40 @@ function sendEmail(string $to, string $subject, string $content): bool
 {
     $mail = new PHPMailer(true);
 
+    $username = getenv('MAIL_USERNAME') ?: '';
+    $password = getenv('MAIL_PASSWORD') ?: '';
+    $fromEmail = getenv('MAIL_FROM_EMAIL') ?: 'noreply@example.com';
+    $fromName = getenv('MAIL_FROM_NAME') ?: 'ePiata';
+
+    if ($username === '' || $password === '') {
+        error_log('Email credentials are not configured. Set MAIL_USERNAME and MAIL_PASSWORD environment variables.');
+        return false;
+    }
+
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; 
+        $mail->Host = getenv('MAIL_HOST') ?: 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'ssimplle.98@gmail.com'; 
-        $mail->Password = 'dnbq owqi rctu bkji';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->Username = $username;
+        $mail->Password = $password;
+        $mail->SMTPSecure = getenv('MAIL_ENCRYPTION') ?: PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = (int) (getenv('MAIL_PORT') ?: 587);
 
         $mail->CharSet='UTF-8';
 
-        $mail->setFrom('ssimplle.98@gmail.com', 'ePiata');
+        $mail->setFrom($fromEmail, $fromName);
         $mail->addAddress($to);
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $content;
         $mail->AltBody = strip_tags($content);
         return $mail->send();
-    } 
+    }
     
     catch (Exception $e) {
         error_log("Email could not be sent: {$mail->ErrorInfo}");
         return false;
     }
-    return true;
 }
 

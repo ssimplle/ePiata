@@ -8,7 +8,7 @@ class UserService
 
     public function isAdmin(int $userId): bool
     {
-        $stmt = $this->pdo->prepare('SELECT type FROM users WHERE id = :id LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT `type` FROM users WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => $userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -17,7 +17,7 @@ class UserService
 
     public function getUser(int $userId): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT id, email, type FROM users WHERE id = :id LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT id, email, `type` FROM users WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => $userId]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);

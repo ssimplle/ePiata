@@ -20,7 +20,7 @@ class AuthService{
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         $addUserStmt = $this->pdo->prepare(
-            'INSERT INTO users (email, password)
+            'INSERT INTO users (email, `password`)
             VALUES (?, ?)'
         );
 
@@ -43,7 +43,7 @@ class AuthService{
     public function login(string $email, string $password): bool
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, password
+            'SELECT id, `password`
             FROM users
             WHERE email = ?
             LIMIT 1'
